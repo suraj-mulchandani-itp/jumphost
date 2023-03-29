@@ -14,6 +14,10 @@ variable "vnet_address_space" {
   type    = list(any)
 }
 
+variable "jumpbox_subnet_id" {
+  type = string
+}
+
 variable "subnet_address_prefixes" {
   type    = list(any)
 }
@@ -40,4 +44,9 @@ variable "admin_username" {
 
 variable "admin_password" {
   type = string
+}
+
+variable "isLinux" {
+  type = bool
+  default = true
 }

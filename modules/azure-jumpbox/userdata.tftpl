@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Install kubectl
+sudo apt-get update
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+chmod +x kubectl
+mkdir -p ~/.local/bin
+mv ./kubectl ~/.local/bin/kubectl
+
+# Install helm
+wget https://get.helm.sh/helm-v3.9.3-linux-amd64.tar.gz
+tar xvf helm-v3.9.3-linux-amd64.tar.gz
+sudo mv linux-amd64/helm /usr/local/bin
+rm helm-v3.4.1-linux-amd64.tar.gz
+rm -rf linux-amd64
+helm version
+
+# Install kubelogin
+
+sudo apt update
+sudo apt install snapd
+sudo snap install kubelogin
+
+# Install az-cli
+
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
