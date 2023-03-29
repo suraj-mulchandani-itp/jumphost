@@ -17,13 +17,13 @@
 #   address_prefixes     = var.subnet_address_prefixes
 # }
 
-# resource "azurerm_public_ip" "jumpbox_public_ip" {
-#   name                = "public_ip"
-#   resource_group_name = azurerm_resource_group.jumphost_resource_group.name
-#   location            = azurerm_resource_group.jumphost_resource_group.location
-#   allocation_method   = "Static"
-#   sku                 = "Standard"
-# }
+resource "azurerm_public_ip" "jumpbox_public_ip" {
+  name                = "public_ip"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
 
 resource "azurerm_network_security_group" "jumpbox_nsg" {
   name                = "jumpbox_nsg"
@@ -64,7 +64,7 @@ resource "azurerm_network_interface" "jumpbox_nic" {
     # subnet_id                     = azurerm_subnet.jumpbox_subnet.id
     subnet_id                     = var.jumpbox_subnet_id
     private_ip_address_allocation = "Dynamic"
-    # public_ip_address_id          = azurerm_public_ip.jumpbox_public_ip.id
+    public_ip_address_id          = azurerm_public_ip.jumpbox_public_ip.id
   }
 }
 
@@ -118,6 +118,10 @@ resource "azurerm_windows_virtual_machine" "jumpbox_vm_windows" {
   # disable_password_authentication = var.disable_password_authentication`
   admin_username                  = var.admin_username
   admin_password                  = var.admin_password
+
+  # User data script
+  user_data = base64encode(templatefile("${path.module}/user.tftpl",{}))
+
   network_interface_ids = [
     azurerm_network_interface.jumpbox_nic.id,
   ]
